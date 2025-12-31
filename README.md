@@ -1,49 +1,127 @@
-# Getting Started with Create React App
+# PMUMS Frontend Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**प्राथमिक-माध्यमिक-उच्च-माध्यमिक शिक्षक संघ, मध्यप्रदेश**  
+*शिक्षक कल्याण कोष योजना - एकता में शक्ति*
 
-## Available Scripts
+## Project Overview
 
-In the project directory, you can run:
+PMUMS is a non-profit teacher welfare organization for Madhya Pradesh government education department employees. When a teacher/employee dies unexpectedly, PMUMS provides financial assistance to their family through voluntary donations from other teachers across the state.
 
-### `npm start`
+## Tech Stack
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Frontend Framework**: React 18
+- **Styling**: Custom CSS Utilities + Material-UI (MUI)
+- **Routing**: React Router v6
+- **State Management**: Context API + React Query
+- **Forms**: React Hook Form
+- **HTTP Client**: Axios
+- **Notifications**: React Hot Toast
+- **Icons**: Material-UI Icons
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Features Implemented ✅
 
-### `npm test`
+### 🏗️ Core Infrastructure
+- [x] Complete project scaffolding with modern React setup
+- [x] Material-UI theme with PMUMS branding colors
+- [x] Custom CSS utilities for blue and white theme styling
+- [x] Responsive layout with Header/Footer components
+- [x] API service with interceptors for auth and error handling
+- [x] Authentication context with JWT token management
+- [x] Protected route wrapper for authenticated pages
+- [x] Toast notification system
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 🔐 Authentication System
+- [x] Login page with form validation
+- [x] Multi-step registration form with:
+  - Personal information (name, email, phone, DOB)
+  - Work details (employee ID, designation, district/block)
+  - Account security (password with confirmation)
+- [x] District and Block selection dropdowns
+- [x] Password strength validation
+- [x] Token-based authentication with auto-logout on expiry
 
-### `npm run build`
+### 🏠 Public Pages
+- [x] Modern home page with:
+  - Hero section with PMUMS mission
+  - Statistics dashboard (members, helped families, donations)
+  - Active death cases with donation progress bars
+  - Mission statement and values
+- [x] Fully responsive design for mobile/tablet/desktop
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Getting Started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Prerequisites
+- Node.js 16+ and npm
+- Backend API running on `http://localhost:8080` (configurable)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Installation
 
-### `npm run eject`
+1. **Install dependencies**:
+```bash
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+2. **Configure environment**:
+```bash
+# Create .env file
+echo "REACT_APP_API_URL=http://localhost:8080/api" > .env
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **Start development server**:
+```bash
+npm start
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+The app will open at `http://localhost:3000`
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## API Integration
 
-## Learn More
+The frontend expects these backend endpoints:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Authentication
+- `POST /api/auth/login` - User login
+- `POST /api/auth/register` - User registration  
+- `GET /api/auth/me` - Get current user profile
+- `POST /api/auth/logout` - Logout user
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Locations
+- `GET /api/locations/districts` - Get all districts
+- `GET /api/locations/blocks/{districtId}` - Get blocks by district
+
+## Next Steps 🚀
+
+### Phase 1: Core User Features (Week 1-2)
+- [ ] User Dashboard with contribution summary
+- [ ] Receipt Upload page with file preview
+- [ ] My Contributions page with status tracking
+- [ ] User Profile management
+
+### Phase 2: Death Case Management (Week 3)
+- [ ] Death Cases listing page
+- [ ] Case details with donation progress
+- [ ] Create new death case form (for family/admin)
+
+### Phase 3: Admin Features (Week 4)
+- [ ] Admin Dashboard with analytics
+- [ ] Receipt verification interface
+- [ ] User management and reports
+
+## Styling Approach
+
+We use **Custom CSS Utilities + Material-UI**:
+- **Custom CSS Utilities**: Hand-crafted utility classes for the blue/white theme
+- **Material-UI**: For complex components (forms, tables, modals)
+- **Responsive Design**: Mobile-first approach with CSS media queries
+
+### Blue & White Theme
+- **Primary Colors**: Deep blue (#1565c0) for headers, buttons, and accents  
+- **Background**: Pure white (#ffffff) for clean, professional look
+- **Utilities**: Custom classes like `.bg-primary-600`, `.text-primary-700`, etc.
+
+---
+
+**Built with ❤️ for the PMUMS community**  
+*सेवा, सहयोग और शिक्षक-कल्याण*
 
 ### Code Splitting
 
