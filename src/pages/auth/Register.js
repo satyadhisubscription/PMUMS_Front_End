@@ -361,6 +361,7 @@ const Register = () => {
                       <Select
                         {...register('gender', { required: 'Gender is required' })}
                         label="लिंग"
+                        defaultValue=""
                         MenuProps={{
                           PaperProps: {
                             sx: {
@@ -413,6 +414,7 @@ const Register = () => {
                       <Select
                         {...register('maritalStatus', { required: 'Marital status is required' })}
                         label="वैवाहिक स्थिति"
+                        defaultValue=""
                         MenuProps={{
                           PaperProps: {
                             sx: {
@@ -911,6 +913,7 @@ const Register = () => {
                       <Select 
                         label="विभाग का नाम" 
                         {...register('department')}
+                        defaultValue=""
                         MenuProps={{
                           PaperProps: {
                             sx: {
@@ -1019,6 +1022,7 @@ const Register = () => {
                       <Select
                         {...register('nominee1Relation')}
                         label="नामांकित का संबंध"
+                        defaultValue=""
                         MenuProps={{
                           PaperProps: {
                             sx: {
@@ -1100,6 +1104,7 @@ const Register = () => {
                       <Select
                         {...register('nominee2Relation')}
                         label="नामांकित का संबंध"
+                        defaultValue=""
                         MenuProps={{
                           PaperProps: {
                             sx: {
