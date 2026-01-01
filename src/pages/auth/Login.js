@@ -276,7 +276,8 @@ const Login = () => {
                 >
                   New User?
                 </Typography>
-                <Button
+                {/* TEMPORARILY HIDDEN: Registration button while development is in progress */}
+                {/* <Button
                   component={RouterLink}
                   to="/register"
                   variant="outlined"
@@ -295,7 +296,17 @@ const Login = () => {
                   }}
                 >
                   Registration
-                </Button>
+                </Button> */}
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: '#999',
+                    fontSize: '0.85rem',
+                    fontStyle: 'italic'
+                  }}
+                >
+                  Registration temporarily unavailable for maintenance
+                </Typography>
               </Box>
             </Box>
           </Paper>
