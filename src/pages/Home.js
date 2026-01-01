@@ -31,18 +31,17 @@ const Home = () => {
     <Layout>
       {/* Hero Banner */}
       <HeroBanner />
-
       {/* Statistics Section */}
       <Statistics />
+
+      {/* Death Case Section */}
+      <Box sx={{ py: 8, background: '#FFF8F0' }}>
+        <DeathCase />
+      </Box>
 
      {/* Founders Section */}
       <Box sx={{ py: 2, background: '#f8f9fa' }}>
         <Founders />
-      </Box>
-      
-      {/* Death Case Section */}
-      <Box sx={{ py: 8, background: '#FFF8F0' }}>
-        <DeathCase />
       </Box>
 
       {/* Self Donation Section */}

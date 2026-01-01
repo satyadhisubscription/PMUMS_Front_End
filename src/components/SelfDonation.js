@@ -7,6 +7,9 @@ import {
   Avatar,
   Button
 } from '@mui/material';
+import {
+  Payment
+} from '@mui/icons-material';
 
 const SelfDonation = () => {
   return (
@@ -28,147 +31,140 @@ const SelfDonation = () => {
           component="h2"
           sx={{
             textAlign: 'center',
-            mb: 4,
+            mb: 1,
             fontWeight: 'bold',
             color: '#1E3A8A',
             fontSize: { xs: '2.5rem', md: '3rem' },
-            fontFamily: 'Poppins'
+            fontFamily: 'Noto Sans Devanagari, Arial, sans-serif'
           }}
         >
           सहयोग
         </Typography>
 
-        <Grid container spacing={2} sx={{ flexWrap: 'nowrap' }}>
-          {/* Left Image Section */}
-          <Grid item xs={4} md={3}>
+        {/* Blue Section Header */}
+        <Box
+          sx={{
+            background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
+            py: 2,
+            px: 4,
+            borderRadius: 2,
+            mb: 3,
+            mt: 3
+          }}
+        >
+          <Typography
+            variant="h6"
+            sx={{
+              color: 'white',
+              fontWeight: 600,
+              fontSize: { xs: '1rem', md: '1.2rem' },
+              fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
+              textAlign: 'center'
+            }}
+          >
+            संगठन की व्यवस्था के लिए सहयोग
+          </Typography>
+        </Box>
+
+        <Typography
+          variant="body1"
+          sx={{
+            color: '#666',
+            fontSize: { xs: '0.9rem', md: '1rem' },
+            lineHeight: 1.8,
+            fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
+            textAlign: 'justify',
+            mb: 4,
+            px: { xs: 2, md: 4 }
+          }}
+        >
+          प्राथमिक-माध्यमिक-उच्च-माध्यमिक शिक्षक संघ, मध्यप्रदेश (PMUMS) एक गैर-लाभकारी, सेवा-आधारित संगठन है।
+          <br />
+          इस पृष्ठ के माध्यम से आप PMUMS की वेबसाइट संचालन, तकनीकी रखरखाव एवं संगठनात्मक गतिविधियों के लिए स्वेच्छा से आर्थिक सहयोग प्रदान कर सकते हैं।
+          <br />
+          यह सहयोग पूरी तरह वैकल्पिक है और किसी भी प्रकार की सदस्यता, लाभ या दावा से जुड़ा नहीं है।
+        </Typography>
+
+        {/* Payment Section */}
+        <Grid container spacing={4} alignItems="center">
+          <Grid item xs={12} md={6}>
+            {/* QR Code Section */}
             <Box
-              component="img"
-              src="/profile.jpg"
-              alt="Ashok Kumar"
               sx={{
-                width: '100%',
-                height: 160,
-                objectFit: 'cover',
-                border: '2px solid #ddd',
-                borderRadius: 1,
-                mb: 1
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                p: 3,
+                border: '2px solid #e0e0e0',
+                borderRadius: 3,
+                backgroundColor: '#f5f5f5'
               }}
-            />
-            <Box sx={{ fontSize: '1rem', color: '#333' }}>
-              <Typography sx={{ mb: 0.5, fontFamily: 'Poppins' }}>
-                <strong>Name :</strong> Ashok Kumar
-              </Typography>
-              <Typography sx={{ mb: 0.5, fontFamily: 'Poppins' }}>
-                <strong>Registration Number :</strong> PMUMS20245896
-              </Typography>
-              <Typography sx={{ fontFamily: 'Poppins' }}>
-                <strong>Registration Date :</strong> 02/05/2024
-              </Typography>
+            >
+              <Box
+                component="img"
+                src="/qr-code.png"
+                alt="QR Code for Payment"
+                sx={{
+                  width: 250,
+                  height: 250,
+                  objectFit: 'contain',
+                  borderRadius: 2
+                }}
+              />
             </Box>
           </Grid>
 
-          {/* Right Content */}
-          <Grid item xs={8} md={9}>
-            <Typography
-              sx={{
-                fontSize: '1.1rem',
-                lineHeight: 1.4,
-                color: '#333',
-                textAlign: 'justify',
-                fontFamily: 'Poppins',
-                mb: 2
-              }}
-            >
-              PMUMS के सुचारू संचालन के लिए आपका सहयोग महत्वपूर्ण है।
-              संस्था के दैनिक संचालन, तकनीकी प्रबंधन, दस्तावेजीकरण,
-              वेबसाइट/डेटाबेस, सर्वर, मीटिंग, आयोजन एवं संचालन से
-              जुड़े अन्य प्रशासनिक खर्चों को पूरा करने के लिए
-              संचालन सहयोग (Operational Donation) की आवश्यकता होती है।
-            </Typography>
+          <Grid item xs={12} md={6}>
+            {/* Payment Options */}
+            <Box sx={{ textAlign: 'center' }}>
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 'bold',
+                  color: '#1976d2',
+                  mb: 2,
+                  fontSize: { xs: '1.5rem', md: '1.8rem' },
+                  fontFamily: 'Noto Sans Devanagari, Arial, sans-serif'
+                }}
+              >
+                भुगतान करें
+              </Typography>
+              
+              <Typography
+                variant="body1"
+                sx={{
+                  color: '#666',
+                  mb: 3,
+                  fontSize: '0.9rem',
+                  fontFamily: 'Arial, sans-serif'
+                }}
+              >
+                "Pay Now by PhonePe, Google Pay or any UPI App"
+              </Typography>
 
-            {/* Nominee Section */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-              {/* First Row - 2 buttons */}
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Button
-                  variant="contained"
-                  sx={{
-                    py: 2,
-                    px: 4,
-                    backgroundColor: '#1E3A8A',
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    fontSize: '1rem',
-                    fontFamily: 'Poppins',
-                    '&:hover': {
-                      backgroundColor: '#152b6b'
-                    }
-                  }}
-                >
-                  श्रीमती सपना अहिरवार (Wife)
-                </Button>
-                
-                <Button
-                  variant="contained"
-                  sx={{
-                    py: 2,
-                    px: 4,
-                    backgroundColor: '#1E3A8A',
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    fontSize: '1rem',
-                    fontFamily: 'Poppins',
-                    '&:hover': {
-                      backgroundColor: '#152b6b'
-                    }
-                  }}
-                >
-                  बॉबी अहिरवार (Son)
-                </Button>
-              </Box>
-
-              {/* Second Row - 2 buttons */}
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: 'center' }}>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    py: 2,
-                    px: 4,
-                    borderColor: '#1E3A8A',
-                    color: '#1E3A8A',
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    fontSize: '1rem',
-                    fontFamily: 'Poppins',
-                    '&:hover': {
-                      borderColor: '#152b6b',
-                      backgroundColor: 'rgba(30, 58, 138, 0.04)'
-                    }
-                  }}
-                >
-                  Nominee 3
-                </Button>
-                
-                <Button
-                  variant="outlined"
-                  sx={{
-                    py: 2,
-                    px: 4,
-                    borderColor: '#1E3A8A',
-                    color: '#1E3A8A',
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    fontSize: '1rem',
-                    fontFamily: 'Poppins',
-                    '&:hover': {
-                      borderColor: '#152b6b',
-                      backgroundColor: 'rgba(30, 58, 138, 0.04)'
-                    }
-                  }}
-                >
-                  Nominee 4
-                </Button>
-              </Box>
+              <Button
+                variant="contained"
+                size="large"
+                startIcon={<Payment />}
+                onClick={() => window.open('https://pages.razorpay.com/pmums', '_blank')}
+                sx={{
+                  background: '#4caf50',
+                  color: 'white',
+                  fontWeight: 'bold',
+                  fontSize: '1.1rem',
+                  px: 3,
+                  py: 1.5,
+                  borderRadius: 3,
+                  textTransform: 'none',
+                  fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    backgroundColor: '#45a049'
+                  }
+                }}
+              >
+                अभी भुगतान करें (Pay Now)
+              </Button>
             </Box>
           </Grid>
         </Grid>

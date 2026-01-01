@@ -23,7 +23,6 @@ const HeroBanner = () => {
         overflow: 'hidden'
       }}
     >
-
       <Container maxWidth="lg">
         {/* User Icon */}
         <Box

@@ -8,8 +8,6 @@ import {
 } from '@mui/material';
 import {
   LocationOn,
-  Phone,
-  Email,
 } from '@mui/icons-material';
 
 const Footer = () => {
@@ -21,14 +19,14 @@ const Footer = () => {
         color: 'white',
         mt: 'auto',
         width: '100%',
-        py: 1
+        py: 3
       }}
     >
       <Container maxWidth={false} sx={{ px: 2 }}>
-        <Grid container spacing={3}>
+        <Grid container spacing={4}>
           {/* Logo and Description Section */}
           <Grid item xs={12} md={4}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
               <Box
                 sx={{
                   width: 60,
@@ -43,7 +41,7 @@ const Footer = () => {
                 }}
               >
                 <img 
-                  src="/logo.png" 
+                  src="/pmums logo.png" 
                   alt="PMUMS Logo" 
                   style={{ 
                     width: '100%', 
@@ -55,94 +53,112 @@ const Footer = () => {
               <Box>
                 <Typography variant="h6" sx={{ 
                   fontWeight: 600,
-                  fontFamily: 'Poppins',
+                  fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
                   color: '#FF9933',
-                  fontSize: '1rem',
+                  fontSize: '1.1rem',
                   lineHeight: 1.2
                 }}>
-                  प्राथमिक शिक्षक संघ (पी.एम.यू.एम.एस.)
+                  प्राथमिक शिक्षक संघ (PMUMS)
                 </Typography>
                 <Typography variant="body2" sx={{ 
                   color: 'rgba(255,255,255,0.8)',
-                  fontSize: '0.85rem',
-                  fontFamily: 'Poppins'
+                  fontSize: '0.9rem',
+                  fontFamily: 'Noto Sans Devanagari, Arial, sans-serif'
                 }}>
-                  शिक्षकों का संगठन, शिक्षकों के लिए, शिक्षकों द्वारा
+                  शिक्षकों का संगठन — शिक्षकों के लिए, शिक्षकों द्वारा
                 </Typography>
               </Box>
             </Box>
-            <Typography variant="body2" sx={{ 
-              color: 'rgba(255,255,255,0.9)',
-              fontSize: '0.9rem',
-              fontFamily: 'Poppins',
-              lineHeight: 1.6,
-              textAlign: 'justify'
-            }}>
-              हमारा उद्देश्य मध्यप्रदेश के शिक्षकों के लिए एक सहायगी तंत्र
-              तैयार करना है ताकि संकट की घड़ी में परिवार अकेला न पड़े।
-              <br />
-              संगठन शिक्षक एकता, मानवीय सेवा और पारस्परिकता के
-              सिद्धांतों पर आधारित है।
-            </Typography>
+            <Box>
+              <Typography variant="body2" sx={{ 
+                color: 'rgba(255,255,255,0.9)',
+                fontSize: '0.9rem',
+                fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
+                lineHeight: 1.6,
+                textAlign: 'justify',
+                mb: 1.5
+              }}>
+                हमारा उद्देश्य मध्यप्रदेश के शिक्षकों के लिए एक सहयोगी तंत्र विकसित करना है, जिससे किसी भी संकट के समय कोई भी शिक्षक परिवार स्वयं को अकेला महसूस न करे।
+              </Typography>
+              <Typography variant="body2" sx={{ 
+                color: 'rgba(255,255,255,0.9)',
+                fontSize: '0.9rem',
+                fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
+                lineHeight: 1.6,
+                textAlign: 'justify'
+              }}>
+                संगठन शिक्षक एकता, मानवीय सेवा एवं पारस्परिक सहयोग की भावना पर आधारित है।
+              </Typography>
+            </Box>
           </Grid>
 
           {/* Support Section */}
           <Grid item xs={12} md={2.5}>
             <Typography variant="h6" sx={{ 
-              mb: 0.5,
+              mb: 2,
               fontWeight: 600,
               color: '#FF9933',
               fontSize: '1.1rem',
-              fontFamily: 'Poppins'
+              fontFamily: 'Noto Sans Devanagari, Arial, sans-serif'
             }}>
-              Support
+              सहयोग (Support)
             </Typography>
             <Box sx={{ 
               display: 'flex', 
               flexDirection: 'column', 
-              gap: 0.5
+              gap: 1
             }}>
-              <Typography variant="body2" sx={{ 
+              <Link href="#" sx={{ 
                 color: 'rgba(255,255,255,0.9)',
+                textDecoration: 'none',
                 fontSize: '0.9rem',
-                fontFamily: 'Poppins',
-                lineHeight: 1.5
+                fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
+                transition: 'all 0.3s ease',
+                '&:hover': { 
+                  color: '#FFA500',
+                  textDecoration: 'underline'
+                }
               }}>
-                • स्वच्छा दानदाताओं हेतु सहयोग
-              </Typography>
-              <Typography variant="body2" sx={{ 
+                • सहयोग सहायता
+              </Link>
+              <Link href="#" sx={{ 
                 color: 'rgba(255,255,255,0.9)',
+                textDecoration: 'none',
                 fontSize: '0.9rem',
-                fontFamily: 'Poppins',
-                lineHeight: 1.5
+                fontFamily: 'Arial, sans-serif',
+                transition: 'all 0.3s ease',
+                '&:hover': { 
+                  color: '#FFA500',
+                  textDecoration: 'underline'
+                }
               }}>
-                • सुविधान/नक्शावक सहायता टीम
-              </Typography>
+                • Sahyog List
+              </Link>
             </Box>
           </Grid>
 
           {/* Important Links Section */}
           <Grid item xs={12} md={2.5}>
             <Typography variant="h6" sx={{ 
-              mb: 0.5,
+              mb: 2,
               fontWeight: 600,
               color: '#FF9933',
               fontSize: '1.1rem',
-              fontFamily: 'Poppins'
+              fontFamily: 'Noto Sans Devanagari, Arial, sans-serif'
             }}>
               महत्वपूर्ण लिंक
             </Typography>
             <Box sx={{ 
               display: 'flex', 
               flexDirection: 'column', 
-              gap: 0.5
+              gap: 1
             }}>
               {[
-                { text: 'हमारे बारे में', href: '/about' },
-                { text: 'शिक्षक सूची', href: '/teachers' },
-                { text: 'दान करें', href: '/donate' },
-                { text: 'नियमावली', href: '/rules' },
-                { text: 'संपर्क करें', href: '/contact' }
+                { text: '• हमारे बारे में', href: '/about' },
+                { text: '• शिक्षक सूची', href: '/teachers' },
+                { text: '• Sahyog करें', href: '/donate' },
+                { text: '• नियमावली', href: '/rules' },
+                { text: '• संपर्क करें', href: '/contact' }
               ].map((link, index) => (
                 <Link 
                   key={index}
@@ -151,7 +167,7 @@ const Footer = () => {
                     color: 'rgba(255,255,255,0.9)',
                     textDecoration: 'none',
                     fontSize: '0.9rem',
-                    fontFamily: 'Poppins',
+                    fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
                     transition: 'all 0.3s ease',
                     '&:hover': { 
                       color: '#FFA500',
@@ -168,18 +184,18 @@ const Footer = () => {
           {/* Contact Details Section */}
           <Grid item xs={12} md={3}>
             <Typography variant="h6" sx={{ 
-              mb: 0.5,
+              mb: 2,
               fontWeight: 600,
               color: '#FF9933',
               fontSize: '1.1rem',
-              fontFamily: 'Poppins'
+              fontFamily: 'Noto Sans Devanagari, Arial, sans-serif'
             }}>
               संपर्क विवरण
             </Typography>
             <Box sx={{ 
               display: 'flex', 
               flexDirection: 'column', 
-              gap: 0.5
+              gap: 1.5
             }}>
               {/* Office Address */}
               <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
@@ -192,50 +208,42 @@ const Footer = () => {
                   <Typography variant="body2" sx={{ 
                     color: 'rgba(255,255,255,0.9)',
                     fontSize: '0.9rem',
-                    fontFamily: 'Poppins',
+                    fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
                     fontWeight: 600,
                     mb: 0.5
                   }}>
-                    पंजीकृत कार्यालय: 06/13/01/14617/23
+                    पंजीकृत कार्यालय : 06/13/01/14617/23
                   </Typography>
                   <Typography variant="body2" sx={{ 
                     color: 'rgba(255,255,255,0.9)',
                     fontSize: '0.85rem',
-                    fontFamily: 'Poppins',
+                    fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
                     lineHeight: 1.4
                   }}>
-                    गण्पतियां टेक, हरू टेक उच, दानापुर, अहमदाबाद - 472001
+                    सुभाष पुरम रोड, हेलिपैड के पीछे, टीकमगढ़, मध्यप्रदेश 472001
                   </Typography>
                 </Box>
               </Box>
 
               {/* Phone */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Phone sx={{ 
-                  color: '#FF9933',
-                  fontSize: '1.2rem'
-                }} />
                 <Typography variant="body2" sx={{ 
                   color: 'rgba(255,255,255,0.9)',
                   fontSize: '0.9rem',
-                  fontFamily: 'Poppins'
+                  fontFamily: 'Arial, sans-serif'
                 }}>
-                  +91 96851 25103
+                  📞 मोबाइल : +91 70002 32795
                 </Typography>
               </Box>
 
               {/* Email */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <Email sx={{ 
-                  color: '#FF9933',
-                  fontSize: '1.2rem'
-                }} />
                 <Typography variant="body2" sx={{ 
                   color: 'rgba(255,255,255,0.9)',
                   fontSize: '0.9rem',
-                  fontFamily: 'Poppins'
+                  fontFamily: 'Arial, sans-serif'
                 }}>
-                  help@pmums.com
+                  📧 ईमेल : Info@pmums.com
                 </Typography>
               </Box>
             </Box>
@@ -245,14 +253,14 @@ const Footer = () => {
         {/* Copyright Section */}
         <Box sx={{ 
           borderTop: '1px solid rgba(255,255,255,0.2)',
-          mt: 1,
-          pt: 0.5,
+          mt: 3,
+          pt: 2,
           textAlign: 'center'
         }}>
           <Typography variant="body2" sx={{ 
             color: 'rgba(255,255,255,0.7)',
             fontSize: '0.85rem',
-            fontFamily: 'Poppins'
+            fontFamily: 'Arial, sans-serif'
           }}>
             © 2025 PMUMS | All Rights Reserved | Designed & Managed by Jyoti Global Ventures
           </Typography>

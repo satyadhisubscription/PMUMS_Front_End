@@ -65,7 +65,7 @@ const FounderCard = ({ founder }) => (
             fontWeight: 'bold', 
             color: '#1E3A8A',
             mb: 2,
-            fontFamily: 'Poppins',
+            fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
             fontSize: '1.3rem'
           }}
         >
@@ -75,7 +75,7 @@ const FounderCard = ({ founder }) => (
           variant="body1" 
           sx={{ 
             color: '#666',
-            fontFamily: 'Poppins',
+            fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
             fontSize: '1rem'
           }}
         >
@@ -91,11 +91,11 @@ const Founders = () => {
     <Container maxWidth="lg" sx={{ py: 6 }}>
       <Box
         sx={{
-          border: '1px solid #e0e0e0',
+          border: '2px solid #1E3A8A',
           borderRadius: 3,
           p: 4,
-          backgroundColor: '#fafafa',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          backgroundColor: '#FFFFFF',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
         }}
       >
         {/* Blue Header */}
@@ -114,11 +114,11 @@ const Founders = () => {
             sx={{
               color: 'white',
               fontWeight: 'bold',
-              fontFamily: 'Poppins',
+              fontFamily: 'Noto Sans Devanagari, Arial, sans-serif',
               fontSize: { xs: '1.5rem', md: '2rem' }
             }}
           >
-            संस्थापक एवं मार्गदर्शक मंडल
+            संस्थापक मंडल
           </Typography>
         </Box>
 
