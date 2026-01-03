@@ -73,14 +73,15 @@ export const AuthProvider = ({ children }) => {
     try {
       // Step 1: Login and get token + user data
       const loginResponse = await authService.login(credentials);
-      console.log('Login API response:', loginResponse);
+      console.log('🔐 Login API response:', loginResponse);
       
       // Extract token and user data from response
       const token = loginResponse.token || loginResponse.data?.token || loginResponse.accessToken;
       const userData = loginResponse.user || loginResponse.data?.user;
       
-      console.log('Extracted token:', token);
-      console.log('Extracted user data:', userData);
+      console.log('🔑 Extracted token:', token);
+      console.log('👤 Extracted user data:', userData);
+      console.log('🆔 User ID from login:', userData?.id);
       
       if (!token) {
         throw new Error('No authentication token received');
@@ -90,21 +91,29 @@ export const AuthProvider = ({ children }) => {
         throw new Error('No user data received');
       }
       
-      // Step 2: Store token and user data
+      // Step 2: Clear old data first
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+      console.log('🧹 Cleared old localStorage data');
+      
+      // Step 3: Store new token and user data
       localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(userData));
+      console.log('💾 Stored new user data:', userData);
+      console.log('💾 Stored user ID:', userData.id);
       
-      // Step 3: Update AuthContext with user data
+      // Step 4: Update AuthContext with user data
       dispatch({ type: 'LOGIN_SUCCESS', payload: userData });
+      console.log('🔄 Updated AuthContext with user:', userData);
       
-      // Step 4: Show success message
+      // Step 5: Show success message
       const userName = userData.name || userData.username || 'उपयोगकर्ता';
       toast.success(`स्वागत है, ${userName}!`);
       
       return loginResponse;
       
     } catch (error) {
-      console.error('Login failed:', error);
+      console.error('❌ Login failed:', error);
       // Clean up on failure
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
@@ -133,8 +142,27 @@ export const AuthProvider = ({ children }) => {
       await authService.logout();
       dispatch({ type: 'LOGOUT' });
       toast.success('आपका लॉगआउट सफल हुआ');
+      
+      // Force page reload to ensure clean state
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (error) {
       console.error('Logout error:', error);
+    }
+  };
+
+  // Hard refresh user data function
+  const refreshUser = async () => {
+    try {
+      console.log('🔄 Force refreshing user data...');
+      const freshUser = await authService.getCurrentUser();
+      dispatch({ type: 'LOGIN_SUCCESS', payload: freshUser });
+      console.log('✅ User data refreshed:', freshUser);
+      return freshUser;
+    } catch (error) {
+      console.error('❌ Failed to refresh user data:', error);
+      throw error;
     }
   };
 
@@ -143,6 +171,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    refreshUser, // Add refresh function to context
   };
 
   return (

@@ -9,7 +9,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
   TextField,
   Select,
   MenuItem,
@@ -46,10 +45,88 @@ const TeachersList = () => {
   
   const itemsPerPage = 10;
 
-  // Get unique districts and blocks for filter dropdowns
+  // Process teacher data using actual database relationships
+  const processTeacherData = (teacher) => {
+    try {
+      // Safely check if database relationships exist
+      const hasDbRelations = teacher.departmentState && teacher.departmentSambhag && 
+                            teacher.departmentDistrict && teacher.departmentBlock;
+      
+      if (hasDbRelations) {
+        // Use actual database relationships (they are strings now)
+        return {
+          ...teacher,
+          state: teacher.departmentState,
+          sambhag: teacher.departmentSambhag, 
+          district: teacher.departmentDistrict,
+          block: teacher.departmentBlock
+        };
+      } else {
+        // Safe fallback for missing data
+        // Use English fallback to match database format
+        return {
+          ...teacher,
+          state: teacher.departmentState || 'Madhya Pradesh',
+          sambhag: teacher.departmentSambhag || 'Bhopal Division',
+          district: teacher.departmentDistrict || 'Bhopal',
+          block: teacher.departmentBlock || 'Bhopal'
+        };
+      }
+    } catch (error) {
+      // Emergency fallback
+      return {
+        ...teacher,
+        state: 'Madhya Pradesh',
+        sambhag: 'Bhopal Division', 
+        district: 'Bhopal',
+        block: 'Bhopal'
+      };
+    }
+  };
+
+  // Get unique values for filter dropdowns
   const getUniqueValues = (key) => {
     const values = teachers.map(teacher => teacher[key]).filter(Boolean);
     return [...new Set(values)];
+  };
+
+  // Define applyFilters before useEffect
+  const applyFilters = () => {
+    let filtered = teachers;
+
+    if (filters.state) {
+      filtered = filtered.filter(teacher => 
+        teacher.state === filters.state
+      );
+    }
+
+    if (filters.sambhag) {
+      filtered = filtered.filter(teacher => 
+        teacher.sambhag === filters.sambhag
+      );
+    }
+
+    if (filters.district) {
+      filtered = filtered.filter(teacher => 
+        teacher.district === filters.district
+      );
+    }
+
+    if (filters.block) {
+      filtered = filtered.filter(teacher => 
+        teacher.block === filters.block
+      );
+    }
+
+    if (filters.searchName) {
+      filtered = filtered.filter(teacher => 
+        `${teacher.name} ${teacher.surname}`.toLowerCase()
+          .includes(filters.searchName.toLowerCase())
+      );
+    }
+
+    setFilteredTeachers(filtered);
+    setCurrentPage(1);
   };
 
   useEffect(() => {
@@ -66,7 +143,27 @@ const TeachersList = () => {
       console.log('Fetching teachers from:', '/users');
       const response = await publicApi.get('/users');
       console.log('Teachers response:', response.data);
-      setTeachers(response.data);
+      
+
+
+      // Process teachers using actual database data
+      const processedTeachers = response.data.map(teacher => {
+        return processTeacherData(teacher);
+      });
+      
+      // Debug: Show actual vs processed data
+      console.log('=== PROCESSED DATABASE RELATIONSHIPS ===');
+      processedTeachers.slice(0, 3).forEach((teacher, index) => {
+        console.log(`Teacher ${index + 1}: ${teacher.name}`);
+        console.log(`  State: ${teacher.state}`);
+        console.log(`  Sambhag: ${teacher.sambhag}`);
+        console.log(`  District: ${teacher.district}`);
+        console.log(`  Block: ${teacher.block}`);
+        console.log('---');
+      });
+      console.log('========================================');
+      
+      setTeachers(processedTeachers);
       setError('');
     } catch (err) {
       console.error('Error fetching teachers:', err);
@@ -75,44 +172,6 @@ const TeachersList = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const applyFilters = () => {
-    let filtered = teachers;
-
-    if (filters.state) {
-      filtered = filtered.filter(teacher => 
-        teacher.departmentState === filters.state
-      );
-    }
-
-    if (filters.sambhag) {
-      filtered = filtered.filter(teacher => 
-        teacher.departmentSambhag === filters.sambhag
-      );
-    }
-
-    if (filters.district) {
-      filtered = filtered.filter(teacher => 
-        teacher.departmentDistrict === filters.district
-      );
-    }
-
-    if (filters.block) {
-      filtered = filtered.filter(teacher => 
-        teacher.departmentBlock === filters.block
-      );
-    }
-
-    if (filters.searchName) {
-      filtered = filtered.filter(teacher => 
-        `${teacher.name} ${teacher.surname}`.toLowerCase()
-          .includes(filters.searchName.toLowerCase())
-      );
-    }
-
-    setFilteredTeachers(filtered);
-    setCurrentPage(1);
   };
 
   const handleFilterChange = (key, value) => {
@@ -358,16 +417,16 @@ const TeachersList = () => {
                           {teacher.department || 'शिक्षा विभाग'}
                         </TableCell>
                         <TableCell align="center">
-                          {teacher.departmentState || 'N/A'}
+                          {teacher.state || 'मध्य प्रदेश'}
                         </TableCell>
                         <TableCell align="center">
-                          {teacher.departmentSambhag || 'N/A'}
+                          {teacher.sambhag || 'भोपाल संभाग'}
                         </TableCell>
                         <TableCell align="center">
-                          {teacher.departmentDistrict || 'N/A'}
+                          {teacher.district || 'भोपाल'}
                         </TableCell>
                         <TableCell align="center">
-                          {teacher.departmentBlock || 'N/A'}
+                          {teacher.block || 'भोपाल'}
                         </TableCell>
                         <TableCell align="center">
                           {teacher.schoolOfficeName || 'शासकीय प्राथमिक विद्यालय'}

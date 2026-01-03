@@ -26,21 +26,6 @@ const SelfDonation = () => {
         }}
       >
         {/* Title */}
-        <Typography
-          variant="h3"
-          component="h2"
-          sx={{
-            textAlign: 'center',
-            mb: 1,
-            fontWeight: 'bold',
-            color: '#1E3A8A',
-            fontSize: { xs: '2.5rem', md: '3rem' },
-            fontFamily: 'Noto Sans Devanagari, Arial, sans-serif'
-          }}
-        >
-          सहयोग
-        </Typography>
-
         {/* Blue Section Header */}
         <Box
           sx={{

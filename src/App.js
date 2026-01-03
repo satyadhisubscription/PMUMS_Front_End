@@ -40,8 +40,7 @@ function App() {
               {/* Public Routes */}
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
-              {/* TEMPORARILY DISABLED: Registration route while development is in progress */}
-              {/* <Route path="/register" element={<Register />} /> */}
+              <Route path="/register" element={<Register />} />
               <Route path="/about" element={<About />} />
               <Route path="/teachers-list" element={<TeachersList />} />
               <Route path="/niyamawali" element={<NiyamawaliPage />} />

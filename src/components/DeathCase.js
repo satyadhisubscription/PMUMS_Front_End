@@ -57,22 +57,6 @@ const DeathCase = () => {
           maxWidth: '1200px'
         }}
       >
-        {/* Main Title */}
-        <Typography
-          variant="h3"
-          component="h2"
-          sx={{
-            textAlign: 'center',
-            mb: 4,
-            fontWeight: 'bold',
-            color: '#1E3A8A',
-            fontSize: '30.6px',
-            fontFamily: 'Poppins'
-          }}
-        >
-          सहयोग
-        </Typography>
-
         {/* Main Content */}
         <Grid container spacing={2} sx={{ flexWrap: { xs: 'wrap', md: 'nowrap' } }}>
         {/* Left Side - Photo and Details */}

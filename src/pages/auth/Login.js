@@ -12,7 +12,7 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
-import { Visibility, VisibilityOff, Phone, Lock } from '@mui/icons-material';
+import { Visibility, VisibilityOff, Person, Lock } from '@mui/icons-material';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../../context/AuthContext';
@@ -163,7 +163,7 @@ const Login = () => {
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Phone sx={{ color: '#ff9800' }} />
+                      <Person sx={{ color: '#ff9800' }} />
                     </InputAdornment>
                   )
                 }}
@@ -276,8 +276,7 @@ const Login = () => {
                 >
                   New User?
                 </Typography>
-                {/* TEMPORARILY HIDDEN: Registration button while development is in progress */}
-                {/* <Button
+                <Button
                   component={RouterLink}
                   to="/register"
                   variant="outlined"
@@ -296,17 +295,7 @@ const Login = () => {
                   }}
                 >
                   Registration
-                </Button> */}
-                <Typography
-                  variant="body2"
-                  sx={{
-                    color: '#999',
-                    fontSize: '0.85rem',
-                    fontStyle: 'italic'
-                  }}
-                >
-                  Registration temporarily unavailable for maintenance
-                </Typography>
+                </Button>
               </Box>
             </Box>
           </Paper>
