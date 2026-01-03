@@ -233,24 +233,38 @@ const Register = () => {
       const district = availableDistricts.find(d => d.id === selectedDistrict);
       const block = availableBlocks.find(b => b.id === selectedBlock);
       
+      // Convert frontend form values to backend enum format
+      const genderMap = {
+        'male': 'MALE',
+        'female': 'FEMALE', 
+        'other': 'OTHER'
+      };
+      
+      const maritalStatusMap = {
+        'single': 'UNMARRIED',
+        'married': 'MARRIED',
+        'divorced': 'DIVORCED',
+        'widowed': 'WIDOWED'
+      };
+      
       // Construct request matching RegisterRequest DTO exactly
       const registrationData = {
         name: formData.name,
         surname: formData.surname,
         fatherName: formData.fatherName,
         countryCode: '+91', // Fixed country code
-        phoneNumber: '', // Empty since we don't have phone number anymore
+        phoneNumber: formData.mobileNumber, // Use mobile as phone
         mobileNumber: formData.mobileNumber,
         email: formData.email,
-        gender: formData.gender,
-        maritalStatus: formData.maritalStatus,
+        gender: genderMap[formData.gender] || 'OTHER', // Convert to enum
+        maritalStatus: maritalStatusMap[formData.maritalStatus] || 'UNMARRIED', // Convert to enum
         password: formData.password,
         homeAddress: formData.homeAddress || '',
         dateOfBirth: formData.dateOfBirth,
         schoolOfficeName: formData.schoolOfficeName || '',
         sankulName: formData.sankulName || '',
-        joiningDate: formData.joiningDate || '',
-        retirementDate: formData.retirementDate || '',
+        joiningDate: formData.joiningDate || null,
+        retirementDate: formData.retirementDate || null,
         department: formData.department || '',
         departmentUniqueId: formData.departmentUniqueId || '',
         departmentState: state?.name || '',
