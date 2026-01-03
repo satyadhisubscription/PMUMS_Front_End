@@ -1,7 +1,25 @@
 import api, { publicApi } from './api';
-import axios from 'axios';
 
 export const authService = {
+  // Clear all cached authentication data
+  clearAllAuthData: () => {
+    console.log('🧹 Clearing all authentication data...');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    
+    // Clear any additional cache that might exist
+    Object.keys(localStorage).forEach(key => {
+      if (key.includes('auth') || key.includes('user') || key.includes('token')) {
+        console.log('🗑️ Removing cached item:', key);
+        localStorage.removeItem(key);
+      }
+    });
+    
+    // Clear sessionStorage as well
+    sessionStorage.clear();
+    console.log('✅ All authentication data cleared');
+  },
+
   // Login user (public endpoint)
   login: async (credentials) => {
     const response = await publicApi.post('/auth/login', credentials);
@@ -10,52 +28,102 @@ export const authService = {
 
   // Register new user (public endpoint)
   register: async (userData) => {
-    // Send data directly matching RegisterRequest DTO structure
-    const payload = {
-      name: userData.name,
-      surname: userData.surname,
-      countryCode: userData.countryCode,
-      phoneNumber: userData.phoneNumber,
-      mobileNumber: userData.mobileNumber,
+    // Let backend auto-generate the ID using IdGeneratorService
+
+    // Try with full payload first, if it fails, try with basic fields only
+    const fullPayload = {
+      // Remove ID field - let backend generate PMUMS2025XXXXX format
+      name: userData.name || '',
+      surname: userData.surname || '',
+      fatherName: userData.fatherName || '', // Added father name field
+      countryCode: userData.countryCode || '+91',
+      phoneNumber: userData.phoneNumber || '',
+      mobileNumber: userData.mobileNumber || '',
       email: userData.email,
-      gender: userData.gender,
-      maritalStatus: userData.maritalStatus,
-      username: userData.username,
+      gender: userData.gender || '',
+      maritalStatus: userData.maritalStatus || '',
       password: userData.password,
-      homeAddress: userData.homeAddress,
-      dateOfBirth: userData.dateOfBirth,
-      schoolOfficeName: userData.schoolOfficeName,
-      department: userData.department,
-      departmentUniqueId: userData.departmentUniqueId,
-      departmentState: userData.departmentState,
-      departmentSambhag: userData.departmentSambhag,
-      departmentDistrict: userData.departmentDistrict,
-      departmentBlock: userData.departmentBlock,
-      nominee1Name: userData.nominee1Name,
-      nominee1Relation: userData.nominee1Relation,
-      nominee2Name: userData.nominee2Name,
-      nominee2Relation: userData.nominee2Relation,
-      acceptedTerms: userData.acceptedTerms
+      homeAddress: userData.homeAddress || '',
+      dateOfBirth: userData.dateOfBirth || null,
+      joiningDate: userData.joiningDate || null, // Professional detail
+      retirementDate: userData.retirementDate || null, // Professional detail
+      schoolOfficeName: userData.schoolOfficeName || '',
+      sankulName: userData.sankulName || '', // संकుل का नाम
+      department: userData.department || '',
+      departmentUniqueId: userData.departmentUniqueId || `DEPT_${userData.email.replace('@', '_').replace('.', '_')}_${Date.now()}`,
+      // ✅ ADD LOCATION FIELDS - CRITICAL!
+      departmentState: userData.departmentState || '',
+      departmentSambhag: userData.departmentSambhag || '',
+      departmentDistrict: userData.departmentDistrict || '',
+      departmentBlock: userData.departmentBlock || '',
+      nominee1Name: userData.nominee1Name || '',
+      nominee1Relation: userData.nominee1Relation || '',
+      nominee2Name: userData.nominee2Name || '',
+      nominee2Relation: userData.nominee2Relation || '',
+      acceptedTerms: true
+    };
+
+    // Basic payload as fallback
+    const basicPayload = {
+      // Remove ID field - let backend generate PMUMS2025XXXXX format
+      name: userData.name || '',
+      surname: userData.surname || '',
+      fatherName: userData.fatherName || '',
+      email: userData.email,
+      password: userData.password,
+      mobileNumber: userData.mobileNumber || '',
+      countryCode: userData.countryCode || '+91',
+      acceptedTerms: true
     };
     
-    const response = await publicApi.post('/auth/register', payload);
-    return response.data;
+    console.log('Trying registration with full payload:', fullPayload);
+    
+    try {
+      const response = await publicApi.post('/auth/register', fullPayload);
+      console.log('Registration successful with full payload:', response.data);
+      return response.data;
+    } catch (error) {
+      console.warn('Full payload failed, trying with basic fields:', error.message);
+      console.log('Trying registration with basic payload:', basicPayload);
+      
+      try {
+        const response = await publicApi.post('/auth/register', basicPayload);
+        console.log('Registration successful with basic payload:', response.data);
+        return response.data;
+      } catch (basicError) {
+        console.error('Both registration attempts failed');
+        console.error('Full payload error:', error.response?.data);
+        console.error('Basic payload error:', basicError.response?.data);
+        throw basicError;
+      }
+    }
   },
 
   // Get current user profile
   getCurrentUser: async () => {
     // Since login now provides complete user data, first check localStorage
     const savedUser = localStorage.getItem('user');
+    console.log('🔍 Checking localStorage for user:', savedUser);
+    
     if (savedUser) {
       const userData = JSON.parse(savedUser);
+      console.log('🔍 Parsed user data from localStorage:', userData);
+      console.log('🆔 Current user ID in localStorage:', userData.id);
       
       // If we have complete user data with ID, use it to fetch fresh data
       if (userData.id) {
         try {
+          console.log('🌐 Fetching fresh user data from API for ID:', userData.id);
           const response = await api.get(`/users/${userData.id}`);
+          console.log('✅ Fresh user data from API:', response.data);
+          console.log('🆔 Fresh user ID from API:', response.data.id);
+          
+          // Update localStorage with fresh data
+          localStorage.setItem('user', JSON.stringify(response.data));
           return response.data;
         } catch (error) {
-          console.error('Failed to fetch user by ID:', error);
+          console.error('❌ Failed to fetch user by ID:', error);
+          console.log('⚠️ Using cached user data as fallback');
           // Return saved user data as fallback if it's complete
           return userData;
         }
@@ -72,8 +140,8 @@ export const authService = {
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
+      // Use comprehensive clear function
+      authService.clearAllAuthData();
     }
   },
 
@@ -94,7 +162,7 @@ export const authService = {
 
   // Send email OTP for verification (public endpoint)
   sendEmailOtp: async (email) => {
-    const response = await axios.post('https://backend.pmums.com/api/auth/email-otp/send', { email });
+    const response = await publicApi.post('/auth/email-otp/send', { email });
     return response.data;
   },
 

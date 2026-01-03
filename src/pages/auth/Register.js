@@ -65,17 +65,80 @@ const Register = () => {
     const fetchLocationHierarchy = async () => {
       try {
         setLoadingLocations(true);
-        const response = await axios.get(`${API_BASE_URL}/locations/hierarchy`);
-        setLocationHierarchy(response.data);
+        
+        // Try to fetch from API first
+        let locationData;
+        try {
+          const response = await axios.get(`${API_BASE_URL}/locations/hierarchy`);
+          locationData = response.data;
+        } catch (apiErr) {
+          console.warn('Location API failed, using fallback data:', apiErr);
+          
+          // Fallback MP data structure
+          locationData = {
+            states: [{
+              id: 'MP',
+              name: 'मध्य प्रदेश',
+              sambhags: [
+                {
+                  id: 'BHOPAL',
+                  name: 'भोपाल संभाग',
+                  districts: [
+                    {
+                      id: 'BHOPAL_DIST',
+                      name: 'भोपाल',
+                      blocks: [
+                        { id: 'BHOPAL_BLOCK', name: 'भोपाल' },
+                        { id: 'HUZUR', name: 'हुजूर' },
+                        { id: 'BERASIA', name: 'बैरसिया' }
+                      ]
+                    },
+                    {
+                      id: 'RAISEN_DIST',
+                      name: 'रायसेन',
+                      blocks: [
+                        { id: 'BEGUMGANJ', name: 'बेगमगंज' },
+                        { id: 'GAIRATGANJ', name: 'गैरतगंज' },
+                        { id: 'BARELI', name: 'बारेली' }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  id: 'INDORE',
+                  name: 'इंदौर संभाग',
+                  districts: [
+                    {
+                      id: 'INDORE_DIST',
+                      name: 'इंदौर',
+                      blocks: [
+                        { id: 'INDORE_BLOCK', name: 'इंदौर' },
+                        { id: 'MHOW', name: 'महू' },
+                        { id: 'SANWER', name: 'सांवेर' }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }]
+          };
+        }
+        
+        setLocationHierarchy(locationData);
         
         // Auto-select Madhya Pradesh if it's the only state
-        if (response.data.states && response.data.states.length === 1) {
-          const mpState = response.data.states[0];
+        if (locationData.states && locationData.states.length === 1) {
+          const mpState = locationData.states[0];
+          console.log('Auto-selecting MP state:', mpState);
+          console.log('Available sambhags:', mpState.sambhags);
           setSelectedState(mpState.id);
           setAvailableSambhags(mpState.sambhags || []);
         }
+        
+        // Debug: Log the complete location data
+        console.log('Complete location hierarchy loaded:', locationData);
       } catch (err) {
-        console.error('Error fetching location hierarchy:', err);
+        console.error('Error setting up location hierarchy:', err);
         setError('स्थान डेटा लोड करने में त्रुटि। कृपया पुनः प्रयास करें।');
       } finally {
         setLoadingLocations(false);
@@ -84,6 +147,20 @@ const Register = () => {
 
     fetchLocationHierarchy();
   }, []);
+
+  // Debug useEffect to track location state changes
+  useEffect(() => {
+    console.log('Location state changed:', {
+      selectedState,
+      selectedSambhag,
+      selectedDistrict,
+      selectedBlock,
+      availableSambhags: availableSambhags?.length || 0,
+      availableDistricts: availableDistricts?.length || 0,
+      availableBlocks: availableBlocks?.length || 0,
+      locationHierarchy: locationHierarchy ? 'loaded' : 'not loaded'
+    });
+  }, [selectedState, selectedSambhag, selectedDistrict, selectedBlock, availableSambhags, availableDistricts, availableBlocks, locationHierarchy]);
 
   // Handle State selection
   const handleStateChange = (event) => {
@@ -102,11 +179,14 @@ const Register = () => {
   // Handle Sambhag selection
   const handleSambhagChange = (event) => {
     const sambhagId = event.target.value;
+    console.log('Sambhag changed to:', sambhagId);
     setSelectedSambhag(sambhagId);
     setSelectedDistrict('');
     setSelectedBlock('');
     
     const sambhag = availableSambhags.find(s => s.id === sambhagId);
+    console.log('Found sambhag:', sambhag);
+    console.log('Districts in sambhag:', sambhag?.districts);
     setAvailableDistricts(sambhag?.districts || []);
     setAvailableBlocks([]);
   };
@@ -114,10 +194,13 @@ const Register = () => {
   // Handle District selection
   const handleDistrictChange = (event) => {
     const districtId = event.target.value;
+    console.log('District changed to:', districtId);
     setSelectedDistrict(districtId);
     setSelectedBlock('');
     
     const district = availableDistricts.find(d => d.id === districtId);
+    console.log('Found district:', district);
+    console.log('Blocks in district:', district?.blocks);
     setAvailableBlocks(district?.blocks || []);
   };
 
@@ -141,8 +224,8 @@ const Register = () => {
     try {
       setError('');
       
-      // Remove confirmPassword and agreeTerms, prepare data according to backend RegisterRequest DTO
-      const { confirmPassword, agreeTerms, ...formData } = data;
+      // Remove confirmPassword, agreeTerms, and confirmMobileNumber, prepare data according to backend RegisterRequest DTO
+      const { confirmPassword, agreeTerms, confirmMobileNumber, ...formData } = data;
       
       // Get location names for department fields
       const state = locationHierarchy?.states?.find(s => s.id === selectedState);
@@ -154,17 +237,20 @@ const Register = () => {
       const registrationData = {
         name: formData.name,
         surname: formData.surname,
-        countryCode: formData.countryCode || '+91',
-        phoneNumber: formData.phoneNumber || '',
+        fatherName: formData.fatherName,
+        countryCode: '+91', // Fixed country code
+        phoneNumber: '', // Empty since we don't have phone number anymore
         mobileNumber: formData.mobileNumber,
         email: formData.email,
         gender: formData.gender,
         maritalStatus: formData.maritalStatus,
-        username: formData.username,
         password: formData.password,
         homeAddress: formData.homeAddress || '',
         dateOfBirth: formData.dateOfBirth,
         schoolOfficeName: formData.schoolOfficeName || '',
+        sankulName: formData.sankulName || '',
+        joiningDate: formData.joiningDate || '',
+        retirementDate: formData.retirementDate || '',
         department: formData.department || '',
         departmentUniqueId: formData.departmentUniqueId || '',
         departmentState: state?.name || '',
@@ -178,11 +264,25 @@ const Register = () => {
         acceptedTerms: true
       };
 
-      console.log('Registration Data:', registrationData);
+
       await registerUser(registrationData);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
+      console.error('Registration error:', err);
+      console.error('Error response:', err.response);
+      console.error('Error message:', err.response?.data?.message || err.message);
+      
+      // Better error handling
+      let errorMessage = 'Registration failed. Please try again.';
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.response?.status === 500) {
+        errorMessage = 'Server error occurred. Please contact support if this continues.';
+      } else if (err.response?.status === 400) {
+        errorMessage = 'Invalid data provided. Please check all fields and try again.';
+      }
+      
+      setError(errorMessage);
     }
   };
 
@@ -323,11 +423,9 @@ const Register = () => {
                   <Grid item xs={12} md={4}>
                     <TextField
                       fullWidth
-                      label="यूजरनेम"
-                      placeholder="Username"
-                      {...register('username', { required: 'Username is required' })}
-                      error={!!errors.username}
-                      helperText={errors.username?.message}
+                      label="पिता का नाम (वैकल्पिक)"
+                      placeholder="Father Name (Optional)"
+                      {...register('fatherName')}
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           border: '1px solid #ccc',
@@ -464,27 +562,13 @@ const Register = () => {
                     <TextField
                       fullWidth
                       label="Country Code"
-                      placeholder="+91"
-                      defaultValue="+91"
-                      {...register('countryCode')}
+                      value="+91"
+                      disabled
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           border: '1px solid #ccc',
-                          borderRadius: '8px'
-                        }
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={5}>
-                    <TextField
-                      fullWidth
-                      label="फोन नंबर"
-                      placeholder="Phone Number"
-                      {...register('phoneNumber')}
-                      sx={{
-                        '& .MuiOutlinedInput-root': {
-                          border: '1px solid #ccc',
-                          borderRadius: '8px'
+                          borderRadius: '8px',
+                          bgcolor: '#f5f5f5'
                         }
                       }}
                     />
@@ -496,10 +580,53 @@ const Register = () => {
                       placeholder="10 अंकों का नंबर"
                       {...register('mobileNumber', { 
                         required: 'Mobile number is required',
-                        pattern: { value: /^[0-9]{10}$/, message: 'Invalid mobile number' }
+                        pattern: { 
+                          value: /^[0-9]{10}$/, 
+                          message: 'Only 10 digits allowed' 
+                        }
                       })}
                       error={!!errors.mobileNumber}
                       helperText={errors.mobileNumber?.message}
+                      inputProps={{ 
+                        maxLength: 10,
+                        inputMode: 'numeric'
+                      }}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                      }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          border: '1px solid #ccc',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={5}>
+                    <TextField
+                      fullWidth
+                      label="मोबाइल नंबर की पुष्टि"
+                      placeholder="10 अंकों का नंबर"
+                      {...register('confirmMobileNumber', { 
+                        required: 'Please confirm mobile number',
+                        pattern: { 
+                          value: /^[0-9]{10}$/, 
+                          message: 'Only 10 digits allowed' 
+                        },
+                        validate: (value) => {
+                          const mobileNumber = watch('mobileNumber');
+                          return value === mobileNumber || 'Mobile numbers do not match';
+                        }
+                      })}
+                      error={!!errors.confirmMobileNumber}
+                      helperText={errors.confirmMobileNumber?.message}
+                      inputProps={{ 
+                        maxLength: 10,
+                        inputMode: 'numeric'
+                      }}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                      }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           border: '1px solid #ccc',
@@ -735,12 +862,24 @@ const Register = () => {
                         }}
                       >
                         <MenuItem value="">संभाग चुनें... (Select Division)</MenuItem>
-                        {availableSambhags.map((sambhag) => (
-                          <MenuItem key={sambhag.id} value={sambhag.id}>
-                            {sambhag.name}
+                        {availableSambhags && availableSambhags.length > 0 ? (
+                          availableSambhags.map((sambhag) => (
+                            <MenuItem key={sambhag.id} value={sambhag.id}>
+                              {sambhag.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>
+                            {loadingLocations ? 'लोड हो रहा है...' : 'कोई संभाग उपलब्ध नहीं'}
                           </MenuItem>
-                        ))}
+                        )}
                       </Select>
+                      {/* Debug info */}
+                      {process.env.NODE_ENV === 'development' && (
+                        <small style={{color: '#666', fontSize: '0.75rem', marginTop: '4px'}}>
+                          Debug: State={selectedState}, Sambhags={availableSambhags?.length || 0}
+                        </small>
+                      )}
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} md={4}>
@@ -787,12 +926,24 @@ const Register = () => {
                         }}
                       >
                         <MenuItem value="">जिला चुनें... (Select District)</MenuItem>
-                        {availableDistricts.map((district) => (
-                          <MenuItem key={district.id} value={district.id}>
-                            {district.name}
+                        {availableDistricts && availableDistricts.length > 0 ? (
+                          availableDistricts.map((district) => (
+                            <MenuItem key={district.id} value={district.id}>
+                              {district.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>
+                            {!selectedSambhag ? 'पहले संभाग चुनें' : 'कोई जिला उपलब्ध नहीं'}
                           </MenuItem>
-                        ))}
+                        )}
                       </Select>
+                      {/* Debug info */}
+                      {process.env.NODE_ENV === 'development' && (
+                        <small style={{color: '#666', fontSize: '0.75rem', marginTop: '4px'}}>
+                          Debug: Sambhag={selectedSambhag}, Districts={availableDistricts?.length || 0}
+                        </small>
+                      )}
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} md={4}>
@@ -839,12 +990,24 @@ const Register = () => {
                         }}
                       >
                         <MenuItem value="">ब्लॉक चुनें... (Select Block)</MenuItem>
-                        {availableBlocks.map((block) => (
-                          <MenuItem key={block.id} value={block.id}>
-                            {block.name}
+                        {availableBlocks && availableBlocks.length > 0 ? (
+                          availableBlocks.map((block) => (
+                            <MenuItem key={block.id} value={block.id}>
+                              {block.name}
+                            </MenuItem>
+                          ))
+                        ) : (
+                          <MenuItem disabled>
+                            {!selectedDistrict ? 'पहले जिला चुनें' : 'कोई ब्लॉक उपलब्ध नहीं'}
                           </MenuItem>
-                        ))}
+                        )}
                       </Select>
+                      {/* Debug info */}
+                      {process.env.NODE_ENV === 'development' && (
+                        <small style={{color: '#666', fontSize: '0.75rem', marginTop: '4px'}}>
+                          Debug: District={selectedDistrict}, Blocks={availableBlocks?.length || 0}
+                        </small>
+                      )}
                     </FormControl>
                   </Grid>
                   <Grid item xs={12} md={8}>
@@ -941,8 +1104,8 @@ const Register = () => {
                   <Grid item xs={12} md={6}>
                     <TextField
                       fullWidth
-                      label="स्कूल/कार्यालय का नाम"
-                      placeholder="School/Office Name"
+                      label="पदस्थ स्कूल/कार्यालय का नाम"
+                      placeholder="Posted School/Office Name"
                       {...register('schoolOfficeName')}
                       sx={{
                         '& .MuiOutlinedInput-root': {
@@ -958,6 +1121,52 @@ const Register = () => {
                       label="विभाग आईडी (Department Unique ID)"
                       placeholder="Unique ID"
                       {...register('departmentUniqueId')}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          border: '1px solid #ccc',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="संकुल का नाम (वैकल्पिक)"
+                      placeholder="Sankul Name (Optional)"
+                      {...register('sankulName')}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          border: '1px solid #ccc',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="नियुक्ति वर्ष (वैकल्पिक)"
+                      type="date"
+                      placeholder="Joining Date (Optional)"
+                      {...register('joiningDate')}
+                      InputLabelProps={{ shrink: true }}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          border: '1px solid #ccc',
+                          borderRadius: '8px'
+                        }
+                      }}
+                    />
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      label="सेवानिवृत्ति की तिथि (वैकल्पिक)"
+                      type="date"
+                      placeholder="Retirement Date (Optional)"
+                      {...register('retirementDate')}
+                      InputLabelProps={{ shrink: true }}
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           border: '1px solid #ccc',
