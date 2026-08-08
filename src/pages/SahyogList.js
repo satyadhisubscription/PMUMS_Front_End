@@ -44,7 +44,7 @@ CloseRounded,
 SaveRounded,
 } from '@mui/icons-material';
 import Layout from '../components/Layout/Layout';
-import { adminAPI, publicApi } from '../services/api';
+import { api, adminAPI, publicApi } from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { isAdminOrSuperAdmin } from '../utils/roleUtils';
 
@@ -99,7 +99,7 @@ const SahyogList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [beneficiaryOptions, setBeneficiaryOptions] = useState([]);
-const { user } = useAuth();
+const { user, loading: authLoading } = useAuth();
 const isAdminUser = isAdminOrSuperAdmin(user);
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
@@ -183,26 +183,38 @@ const activeFilters = filtersOverride || filters;
 // const response = await publicApi.get('/admin/monthly-sahyog/donors/search-by-beneficiary', {
 
 // NEW
-const response = await publicApi.get('/public/monthly-sahyog/donors/search-by-beneficiary', {
-       params: {
-  page: pageNum,
-  size: pageSize,
-  ...(activeFilters.userId && { userId: activeFilters.userId }),
-  ...(activeFilters.fullName && { name: activeFilters.fullName }),
-  ...(activeFilters.mobileNumber && { mobile: activeFilters.mobileNumber }),
-  ...(activeFilters.sambhag && { sambhag: activeFilters.sambhag }),
-  ...(activeFilters.district && { district: activeFilters.district }),
-  ...(activeFilters.block && { block: activeFilters.block }),
-  ...(activeFilters.beneficiaryId &&
-    activeFilters.beneficiaryId !== OPEN_DEATH_CASES_VALUE && {
-      beneficiaryId: activeFilters.beneficiaryId,
+const requestConfig = {
+  params: {
+    page: pageNum,
+    size: pageSize,
+    ...(activeFilters.userId && { userId: activeFilters.userId }),
+    ...(activeFilters.fullName && { name: activeFilters.fullName }),
+    ...(activeFilters.mobileNumber && { mobile: activeFilters.mobileNumber }),
+    ...(activeFilters.sambhag && { sambhag: activeFilters.sambhag }),
+    ...(activeFilters.district && { district: activeFilters.district }),
+    ...(activeFilters.block && { block: activeFilters.block }),
+
+    ...(activeFilters.beneficiaryId &&
+      activeFilters.beneficiaryId !== OPEN_DEATH_CASES_VALUE && {
+        beneficiaryId: activeFilters.beneficiaryId,
+      }),
+
+    ...(activeFilters.beneficiaryId === OPEN_DEATH_CASES_VALUE && {
+      openOnly: true,
     }),
-  ...(activeFilters.beneficiaryId === OPEN_DEATH_CASES_VALUE && {
-    openOnly: true,
-  }),
-},
-        signal: abortControllerRef.current.signal,
-      });
+  },
+  signal: abortControllerRef.current.signal,
+};
+
+const response = isAdminUser
+  ? await api.get(
+      '/admin/monthly-sahyog/donors/search-by-beneficiary',
+      requestConfig
+    )
+  : await publicApi.get(
+      '/public/monthly-sahyog/donors/search-by-beneficiary',
+      requestConfig
+    );
 
       if (thisRequestId !== requestIdRef.current) {
         return;
@@ -237,17 +249,17 @@ const response = await publicApi.get('/public/monthly-sahyog/donors/search-by-be
         setLoading(false);
       }
     }
-  }, [
-    pageSize,
-    filters.userId,
-    filters.fullName,
-    filters.mobileNumber,
-    filters.sambhag,
-    filters.district,
-    filters.block,
-    filters.beneficiaryId,
-  ]);
-
+}, [
+  pageSize,
+  filters.userId,
+  filters.fullName,
+  filters.mobileNumber,
+  filters.sambhag,
+  filters.district,
+  filters.block,
+  filters.beneficiaryId,
+  isAdminUser,
+]);
   // useEffect(() => {
   //   if (isInitialMount.current) {
   //     return;
@@ -271,18 +283,24 @@ const response = await publicApi.get('/public/monthly-sahyog/donors/search-by-be
   //   filters.beneficiaryId,
   // ]);
 
-  useEffect(() => {
-    fetchDonors(0).then(() => {
-      isInitialMount.current = false;
-    });
+useEffect(() => {
+  if (authLoading) {
+    return;
+  }
 
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  fetchDonors(0).then(() => {
+    isInitialMount.current = false;
+  });
+
+  return () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  };
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [authLoading, isAdminUser]);
+
 const handleOpenEditDialog = (donor) => {
   setSelectedDonor(donor);
 
